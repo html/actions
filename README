@@ -1,0 +1,36 @@
+Actions
+=======
+
+Actions is a framework for reusable controller actions. 
+The idea is to have such framework and to make action packs that work with this framework.
+
+Example
+=======
+
+You define action (The following code acts like default scaffolded index action)
+
+module Actions
+  module Repository
+    define_action :index do
+      str = self.class.to_s.sub /Controller$/, ''
+      var =  "@#{str.underscore.pluralize}"
+      model = str.singularize.camelize.constantize
+
+      instance_variable_set var, model.all
+
+      respond_to do |format|
+        format.html
+        format.xml { render :xml => instance_variable_get(var) }
+      end
+    end
+  end
+end
+
+Then use it
+
+class ArticlesController < ApplicationController
+  action :index
+end
+
+
+Copyright (c) 2009 Olexiy Zamkoviy, released under the MIT license
